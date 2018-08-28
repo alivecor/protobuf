@@ -332,7 +332,7 @@ def py_proto_library(
   )
 
   if default_runtime and not default_runtime in py_libs + deps:
-    py_libs += [default_runtime]
+    py_libs = py_libs + [default_runtime]
 
   native.py_library(
       name=name,
