@@ -67,7 +67,7 @@ IOS_ARM_COPTS = COPTS + [
     "-arch armv7s",
     "-arch arm64",
     "-D__thread=",
-    "-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.2.sdk/",
+    "-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/",
 ]
 
 cc_library(
