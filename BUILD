@@ -18,7 +18,7 @@ COPTS = select({
     ":windows" : WIN_COPTS,
     ":windows_msvc" : WIN_COPTS,
     "//conditions:default": [
-        "-DHAVE_PTHREAD",
+#        "-DHAVE_PTHREAD",
         "-Wall",
         "-Wwrite-strings",
         "-Woverloaded-virtual",
@@ -49,7 +49,7 @@ LINK_OPTS = select({
     ":android": [],
     ":windows": [],
     ":windows_msvc": [],
-    "//conditions:default": ["-lpthread", "-lm"],
+    "//conditions:default": ["-lm"],
 })
 
 load(

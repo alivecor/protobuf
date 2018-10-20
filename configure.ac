@@ -174,8 +174,8 @@ AS_IF([test "$with_protoc" != "no"], [
 ])
 AM_CONDITIONAL([USE_EXTERNAL_PROTOC], [test "$with_protoc" != "no"])
 
-ACX_PTHREAD
-AM_CONDITIONAL([HAVE_PTHREAD], [test "x$acx_pthread_ok" = "xyes"])
+#ACX_PTHREAD
+AM_CONDITIONAL([HAVE_PTHREAD], [false])
 
 # We still keep this for improving pbconfig.h for unsupported platforms.
 AC_CXX_STL_HASH

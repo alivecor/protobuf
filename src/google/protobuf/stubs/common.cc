@@ -48,8 +48,8 @@
 #define snprintf _snprintf    // see comment in strutil.cc
 #elif defined(HAVE_PTHREAD)
 #include <pthread.h>
-#else
-#error "No suitable threading library available."
+//#else
+//#error "No suitable threading library available."
 #endif
 #if defined(__ANDROID__)
 #include <android/log.h>
@@ -390,6 +390,23 @@ void Mutex::AssertHeld() {
   // pthreads dosn't provide a way to check which thread holds the mutex.
   // TODO(kenton):  Maybe keep track of locking thread ID like with WIN32?
 }
+
+#else
+
+// Provide a no-op Mutex implementation suitable for a single-thread
+// environment.
+
+struct Mutex::Internal {};
+
+Mutex::Mutex() {}
+
+Mutex::~Mutex() {}
+
+void Mutex::Lock() {}
+
+void Mutex::Unlock() {}
+
+void Mutex::AssertHeld() {}
 
 #endif
 
