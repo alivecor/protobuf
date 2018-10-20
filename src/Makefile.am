@@ -13,7 +13,7 @@ ZLIB_DEF =
 endif
 
 if HAVE_PTHREAD
-PTHREAD_DEF = -DHAVE_PTHREAD=1
+PTHREAD_DEF =
 else
 PTHREAD_DEF =
 endif
@@ -21,14 +21,14 @@ endif
 if GCC
 # Turn on all warnings except for sign comparison (we ignore sign comparison
 # in Google so our code base have tons of such warnings).
-NO_OPT_CXXFLAGS = $(PTHREAD_CFLAGS) $(PTHREAD_DEF) $(ZLIB_DEF) -Wall -Wno-sign-compare
+NO_OPT_CXXFLAGS = $(ZLIB_DEF) -Wall -Wno-sign-compare
 else
-NO_OPT_CXXFLAGS = $(PTHREAD_CFLAGS) $(PTHREAD_DEF) $(ZLIB_DEF)
+NO_OPT_CXXFLAGS = $(ZLIB_DEF)
 endif
 
 AM_CXXFLAGS = $(NO_OPT_CXXFLAGS) $(PROTOBUF_OPT_FLAG)
 
-AM_LDFLAGS = $(PTHREAD_CFLAGS)
+AM_LDFLAGS =
 
 # If I say "dist_include_DATA", automake complains that $(includedir) is not
 # a "legitimate" directory for DATA.  Screw you, automake.
@@ -176,7 +176,6 @@ nobase_include_HEADERS =                                        \
 
 lib_LTLIBRARIES = libprotobuf-lite.la libprotobuf.la libprotoc.la
 
-libprotobuf_lite_la_LIBADD = $(PTHREAD_LIBS)
 libprotobuf_lite_la_LDFLAGS = -version-info 11:0:0 -export-dynamic -no-undefined
 libprotobuf_lite_la_SOURCES =                                  \
   google/protobuf/stubs/atomicops_internals_x86_gcc.cc         \
@@ -217,7 +216,6 @@ libprotobuf_lite_la_SOURCES =                                  \
   google/protobuf/io/zero_copy_stream.cc                       \
   google/protobuf/io/zero_copy_stream_impl_lite.cc
 
-libprotobuf_la_LIBADD = $(PTHREAD_LIBS)
 libprotobuf_la_LDFLAGS = -version-info 11:0:0 -export-dynamic -no-undefined
 libprotobuf_la_SOURCES =                                       \
   $(libprotobuf_lite_la_SOURCES)                               \
@@ -301,7 +299,7 @@ libprotobuf_la_SOURCES =                                       \
 
 nodist_libprotobuf_la_SOURCES = $(nodist_libprotobuf_lite_la_SOURCES)
 
-libprotoc_la_LIBADD = $(PTHREAD_LIBS) libprotobuf.la
+libprotoc_la_LIBADD = libprotobuf.la
 libprotoc_la_LDFLAGS = -version-info 11:0:0 -export-dynamic -no-undefined
 libprotoc_la_SOURCES =                                         \
   google/protobuf/compiler/code_generator.cc                   \
@@ -482,7 +480,7 @@ libprotoc_la_SOURCES =                                         \
   google/protobuf/compiler/csharp/csharp_wrapper_field.h
 
 bin_PROGRAMS = protoc
-protoc_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la
+protoc_LDADD = libprotobuf.la libprotoc.la
 protoc_SOURCES = google/protobuf/compiler/main.cc
 
 # Tests ==============================================================
@@ -696,7 +694,7 @@ COMMON_TEST_SOURCES =                                          \
 check_PROGRAMS = protoc protobuf-test protobuf-lazy-descriptor-test \
                  protobuf-lite-test test_plugin protobuf-lite-arena-test \
                  no-warning-test $(GZCHECKPROGRAMS)
-protobuf_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la \
+protobuf_test_LDADD = libprotobuf.la libprotoc.la \
                       ../gmock/gtest/lib/libgtest.la              \
                       ../gmock/lib/libgmock.la                    \
                       ../gmock/lib/libgmock_main.la
@@ -782,7 +780,7 @@ protobuf_test_SOURCES =                                        \
 nodist_protobuf_test_SOURCES = $(protoc_outputs)
 
 # Run cpp_unittest again with PROTOBUF_TEST_NO_DESCRIPTORS defined.
-protobuf_lazy_descriptor_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la \
+protobuf_lazy_descriptor_test_LDADD = libprotobuf.la \
                       libprotoc.la                                   \
                       ../gmock/gtest/lib/libgtest.la                 \
                       ../gmock/lib/libgmock.la                       \
@@ -808,7 +806,7 @@ COMMON_LITE_TEST_SOURCES =                                             \
 # depend on gtest because our internal version of gtest depend on proto
 # full runtime and we want to make sure this test builds without full
 # runtime.
-protobuf_lite_test_LDADD = $(PTHREAD_LIBS) libprotobuf-lite.la
+protobuf_lite_test_LDADD = libprotobuf-lite.la
 protobuf_lite_test_CXXFLAGS = $(NO_OPT_CXXFLAGS)
 protobuf_lite_test_SOURCES =                                           \
   google/protobuf/lite_unittest.cc                                     \
@@ -818,7 +816,7 @@ nodist_protobuf_lite_test_SOURCES = $(protoc_lite_outputs)
 # lite_arena_unittest depends on gtest because teboring@ found that without
 # gtest when building the test internally our memory sanitizer doesn't detect
 # memory leaks (don't know why).
-protobuf_lite_arena_test_LDADD = $(PTHREAD_LIBS) libprotobuf-lite.la \
+protobuf_lite_arena_test_LDADD = libprotobuf-lite.la \
                       ../gmock/gtest/lib/libgtest.la                 \
                       ../gmock/lib/libgmock.la                       \
                       ../gmock/lib/libgmock_main.la
@@ -831,7 +829,7 @@ protobuf_lite_arena_test_SOURCES =       \
 nodist_protobuf_lite_arena_test_SOURCES = $(protoc_lite_outputs)
 
 # Test plugin binary.
-test_plugin_LDADD = $(PTHREAD_LIBS) libprotobuf.la libprotoc.la \
+test_plugin_LDADD = libprotobuf.la libprotoc.la \
                     ../gmock/gtest/lib/libgtest.la
 test_plugin_CPPFLAGS = -I$(srcdir)/../gmock/gtest/include
 test_plugin_SOURCES =                                          \
@@ -841,10 +839,10 @@ test_plugin_SOURCES =                                          \
   google/protobuf/compiler/test_plugin.cc
 
 if HAVE_ZLIB
-zcgzip_LDADD = $(PTHREAD_LIBS) libprotobuf.la
+zcgzip_LDADD = libprotobuf.la
 zcgzip_SOURCES = google/protobuf/testing/zcgzip.cc
 
-zcgunzip_LDADD = $(PTHREAD_LIBS) libprotobuf.la
+zcgunzip_LDADD = libprotobuf.la
 zcgunzip_SOURCES = google/protobuf/testing/zcgunzip.cc
 endif
 
@@ -861,11 +859,11 @@ no_warning_test.cc:
 	echo "#include <gtest/gtest.h>" >> no_warning_test.cc
 	echo "TEST(NoWarningTest, Empty) {}" >> no_warning_test.cc
 
-no_warning_test_LDADD = $(PTHREAD_LIBS) libprotobuf.la      \
+no_warning_test_LDADD = libprotobuf.la      \
                         ../gmock/gtest/lib/libgtest.la      \
                         ../gmock/gtest/lib/libgtest_main.la
 no_warning_test_CPPFLAGS = -I$(srcdir)/../gmock/gtest/include
-no_warning_test_CXXFLAGS = $(PTHREAD_CFLAGS) $(PTHREAD_DEF) $(ZLIB_DEF) \
+no_warning_test_CXXFLAGS = $(ZLIB_DEF) \
                            -Wall -Werror
 nodist_no_warning_test_SOURCES = no_warning_test.cc $(protoc_outputs)
 
