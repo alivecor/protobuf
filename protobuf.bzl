@@ -235,7 +235,7 @@ def internal_gen_well_known_protos_java(srcs):
   Args:
     srcs: the well known protos
   """
-  root = Label("%s//protobuf_java" % (REPOSITORY_NAME)).workspace_root
+  root = Label("%s//protobuf_java" % (repository_name())).workspace_root
   if root == "":
     include = " -Isrc "
   else:
