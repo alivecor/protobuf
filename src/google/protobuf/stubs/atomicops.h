@@ -174,7 +174,7 @@ Atomic64 Release_Load(volatile const Atomic64* ptr);
 #include <google/protobuf/stubs/atomicops_internals_tsan.h>
 // MSVC.
 #elif defined(_MSC_VER)
-#if defined(GOOGLE_PROTOBUF_ARCH_IA32) || defined(GOOGLE_PROTOBUF_ARCH_X64)
+#if defined(GOOGLE_PROTOBUF_ARCH_IA32) || defined(GOOGLE_PROTOBUF_ARCH_X64) || defined(GOOGLE_PROTOBUF_ARCH_ARM)
 #include <google/protobuf/stubs/atomicops_internals_x86_msvc.h>
 #else
 #error GOOGLE_PROTOBUF_ATOMICOPS_ERROR
@@ -188,16 +188,16 @@ Atomic64 Release_Load(volatile const Atomic64* ptr);
 #elif defined(GOOGLE_PROTOBUF_OS_AIX)
 #include <google/protobuf/stubs/atomicops_internals_power.h>
 
-// Apple.
-#elif defined(GOOGLE_PROTOBUF_OS_APPLE)
-#include <google/protobuf/stubs/atomicops_internals_macosx.h>
-
 // GCC.
 #elif defined(__GNUC__)
 #if defined(GOOGLE_PROTOBUF_ARCH_IA32) || defined(GOOGLE_PROTOBUF_ARCH_X64)
 #include <google/protobuf/stubs/atomicops_internals_x86_gcc.h>
 #elif defined(GOOGLE_PROTOBUF_ARCH_ARM) && defined(__linux__)
+#if (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)) || (__GNUC__ > 4))
+#include <google/protobuf/stubs/atomicops_internals_generic_gcc.h>
+#else
 #include <google/protobuf/stubs/atomicops_internals_arm_gcc.h>
+#endif
 #elif defined(GOOGLE_PROTOBUF_ARCH_AARCH64)
 #include <google/protobuf/stubs/atomicops_internals_arm64_gcc.h>
 #elif defined(GOOGLE_PROTOBUF_ARCH_ARM_QNX)
@@ -225,12 +225,6 @@ Atomic64 Release_Load(volatile const Atomic64* ptr);
 // Unknown.
 #else
 #error GOOGLE_PROTOBUF_ATOMICOPS_ERROR
-#endif
-
-// On some platforms we need additional declarations to make AtomicWord
-// compatible with our other Atomic* types.
-#if defined(GOOGLE_PROTOBUF_OS_APPLE)
-#include <google/protobuf/stubs/atomicops_internals_atomicword_compat.h>
 #endif
 
 #undef GOOGLE_PROTOBUF_ATOMICOPS_ERROR
