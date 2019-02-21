@@ -199,7 +199,12 @@ Atomic64 Release_Load(volatile const Atomic64* ptr);
 #include <google/protobuf/stubs/atomicops_internals_arm_gcc.h>
 #endif
 #elif defined(GOOGLE_PROTOBUF_ARCH_AARCH64)
-#include <google/protobuf/stubs/atomicops_internals_arm64_gcc.h>
+// When building targets in Xcode, if Bitcode is enabled, inline assembly is not allowed in the project. As such, we
+// should fall back to using the generic gcc implementation so that we do not deal with the inline assembly included
+// within atomicops_internals_arm64_gcc.h. This specifically is a problem with watchOS, but may be a problem in the
+// future if Bitcode becomes enabled for iOS as well.
+//#include <google/protobuf/stubs/atomicops_internals_arm64_gcc.h>
+#include <google/protobuf/stubs/atomicops_internals_generic_gcc.h>
 #elif defined(GOOGLE_PROTOBUF_ARCH_ARM_QNX)
 #include <google/protobuf/stubs/atomicops_internals_arm_qnx.h>
 #elif defined(GOOGLE_PROTOBUF_ARCH_MIPS) || defined(GOOGLE_PROTOBUF_ARCH_MIPS64)
