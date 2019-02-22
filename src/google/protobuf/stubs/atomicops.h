@@ -191,7 +191,12 @@ Atomic64 Release_Load(volatile const Atomic64* ptr);
 // GCC.
 #elif defined(__GNUC__)
 #if defined(GOOGLE_PROTOBUF_ARCH_IA32) || defined(GOOGLE_PROTOBUF_ARCH_X64)
-#include <google/protobuf/stubs/atomicops_internals_x86_gcc.h>
+// When building simulator targets in Xcode, any target that has a dependency will also be built. If those dependencies
+// contain an inability to run inline assembly (for instance, the watch extension of an iOS target), x86_gcc.h will
+// fail to work due to its use of inline assembly. For those simulator builds, we should fall back to the generic gcc
+// implementation.
+//#include <google/protobuf/stubs/atomicops_internals_x86_gcc.h>
+#include <google/protobuf/stubs/atomicops_internals_generic_gcc.h>
 #elif defined(GOOGLE_PROTOBUF_ARCH_ARM) && defined(__linux__)
 #if (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)) || (__GNUC__ > 4))
 #include <google/protobuf/stubs/atomicops_internals_generic_gcc.h>
