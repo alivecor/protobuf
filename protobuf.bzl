@@ -77,7 +77,7 @@ def _proto_gen_impl(ctx):
     args += ["--%s_out=%s" % (lang, outdir)]
 
   if args:
-    ctx.action(
+    ctx.actions.run(
         inputs=srcs + deps,
         outputs=ctx.outputs.outs,
         arguments=args + import_flags + [s.path for s in srcs],
