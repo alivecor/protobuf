@@ -8,7 +8,7 @@ exports_files(["LICENSE"])
 # Protobuf Runtime Library
 ################################################################################
 
-global_copts = [
+COPTS = [
     "-DHAVE_PTHREAD",
     "-Wall",
     "-Wwrite-strings",
@@ -17,16 +17,6 @@ global_copts = [
     "-Wno-error=unused-function",
 ]
 
-
-# Workaround for bazel crosstool not defining this.
-arm64_32_copts = [
-    "-D__arm64__"
-]
-
-COPTS = global_copts + select({
-    "//:target_watchos_armv64_32": arm64_32_copts,
-    "//conditions:default": []
-})
 
 config_setting(
     name = "android",
@@ -72,18 +62,18 @@ config_setting(
 )
 
 config_setting(
-    name = "target_watchos_armv7k",
-    values = {
-        "cpu": "watchos_armv7k",
-    },
-)
+     name = "target_watchos_armv7k",
+     values = {
+         "cpu": "watchos_armv7k",
+     },
+ )
 
-config_setting(
-    name = "target_watchos_armv64_32",
-    values = {
-        "cpu": "watchos_arm64_32",
-    },
-)
+ config_setting(
+     name = "target_watchos_armv64_32",
+     values = {
+         "cpu": "watchos_arm64_32",
+     },
+ )
 
 
 IOS_ARM_COPTS = COPTS + [
@@ -95,6 +85,13 @@ IOS_ARM_COPTS = COPTS + [
     "-D__thread=",
     "-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/",
 ]
+
+# Workaround for bazel crosstool not defining this.
+
+ARM64_32_COPTS = COPTS + [
+    "-D__arm64__"
+]
+
 
 cc_library(
     name = "protobuf_lite",
@@ -129,6 +126,7 @@ cc_library(
         ":ios_armv7": IOS_ARM_COPTS,
         ":ios_armv7s": IOS_ARM_COPTS,
         ":ios_arm64": IOS_ARM_COPTS,
+        "//:target_watchos_armv64_32": ARM64_32_COPTS,
         "//conditions:default": COPTS,
     }),
     includes = ["src/"],
@@ -199,6 +197,7 @@ cc_library(
         ":ios_armv7": IOS_ARM_COPTS,
         ":ios_armv7s": IOS_ARM_COPTS,
         ":ios_arm64": IOS_ARM_COPTS,
+        "//:target_watchos_armv64_32": ARM64_32_COPTS,
         "//conditions:default": COPTS,
     }),
     includes = ["src/"],
