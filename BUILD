@@ -62,18 +62,18 @@ config_setting(
 )
 
 config_setting(
-     name = "target_watchos_armv7k",
-     values = {
-         "cpu": "watchos_armv7k",
-     },
- )
+    name = "target_watchos_armv7k",
+    values = {
+        "cpu": "watchos_armv7k",
+    },
+)
 
- config_setting(
-     name = "target_watchos_armv64_32",
-     values = {
-         "cpu": "watchos_arm64_32",
-     },
- )
+config_setting(
+    name = "target_watchos_armv64_32",
+    values = {
+        "cpu": "watchos_arm64_32",
+    },
+)
 
 
 IOS_ARM_COPTS = COPTS + [
@@ -89,7 +89,7 @@ IOS_ARM_COPTS = COPTS + [
 # Workaround for bazel crosstool not defining this.
 
 ARM64_32_COPTS = COPTS + [
-    "-D__arm64__"
+    "-D__arm64__",
 ]
 
 
