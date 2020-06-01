@@ -8,7 +8,7 @@ exports_files(["LICENSE"])
 # Protobuf Runtime Library
 ################################################################################
 
-COPTS = [
+global_copts = [
     "-DHAVE_PTHREAD",
     "-Wall",
     "-Wwrite-strings",
@@ -16,6 +16,17 @@ COPTS = [
     "-Wno-sign-compare",
     "-Wno-error=unused-function",
 ]
+
+
+# Workaround for bazel crosstool not defining this.
+arm64_32_copts = [
+    "-D__arm64__"
+]
+
+COPTS = global_copts + select({
+    "//:target_watchos_armv64_32": arm64_32_copts,
+    "//conditions:default": []
+})
 
 config_setting(
     name = "android",
@@ -59,6 +70,21 @@ config_setting(
         "ios_cpu": "arm64",
     },
 )
+
+config_setting(
+    name = "target_watchos_armv7k",
+    values = {
+        "cpu": "watchos_armv7k",
+    },
+)
+
+config_setting(
+    name = "target_watchos_armv64_32",
+    values = {
+        "cpu": "watchos_arm64_32",
+    },
+)
+
 
 IOS_ARM_COPTS = COPTS + [
     "-DOS_IOS",
